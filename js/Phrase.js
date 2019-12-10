@@ -5,7 +5,6 @@
  class Phrase {
  	
  	constructor(phrase) {
-		 //console.log(phrase.phrase);
 		 this.phrase = phrase.toLowerCase();
  	}
 
@@ -63,7 +62,6 @@
 
  	checkLetter(letter) {
 		if(game.activePhrase.phrase.includes(letter)=== false){
-			
 			// If guess is not there, increment game.missed, run game.removeLife, and tell system it's a false guess
 			game.missed+1;
 			game.removeLife();

@@ -43,22 +43,15 @@
 
 
 	/**
-	 * Test phrases to make sure they only have spaces and letters
+	 * Test phrases to make sure they only contain spaces and letters
+	 * @param (phrases) An array of phrases to be validated for letters and spaces
+	 * @return [Array] array of phrases that have been tested to make sure they contain correct characters
 	 */
 
-	testPhrases(){
+	testPhrases(possiblePhrases){
 		// Create regEx verifying phrases have spaces and letters only
 		let regEx = /^[a-zA-Z\s]*$/; 
 		
-		// create list of possible phrases to test
-		let possiblePhrases = [
-			'A Career That Spanned Generations',
-			'Academy Awards Host',
-			'Josie And The Pussycats In Outer Space',
-			'Copies Of My Transcripts',
-			'Pasta Maker'
-		];
-
 		//Create array to hold phrases that pass the test
 		let approvedPhrases = [];
 
@@ -78,9 +71,20 @@
 	 * */
 
 	createPhrases(){
-		// List of phrase strings that have been run through a regex
-		let testedPhrases = this.testPhrases();
-		// Array to hold phrase objects
+
+		// Create list of possible phrases to validate
+		let allPhrases = [
+			'A Career That Spanned Generations',
+			'Academy Awards Host',
+			'Josie And The Pussycats In Outer Space',
+			'Copies Of My Transcripts',
+			'Pasta Maker'
+		];
+		
+		// Validate the phrases to make sure they only have spaces and letters
+		let testedPhrases = this.testPhrases(allPhrases);
+		
+		// Array to hold validated phrase objects
 		let approvedPhrases = [];
 
 		// Loop through each phrase string and pass it into an Object
@@ -144,15 +148,11 @@
 		// Add a data attribute to all keys for easier access via keyboard
 		this.addDataAttrToKeys();
 
-		//const clickLetterCheck = this.activePhrase.checkLetter(button.innerHTML);
-		//const keyLetterCheck = this.activePhrase.checkLetter(event.key);
-
 		// Determine whether user is clicking or using the keyboard
 		if(event.type === 'click'){
-			//console.log(button);
 			button.disabled = true;
 			if(this.activePhrase.checkLetter(button.innerHTML)=== false){
-				// If it's an error, add the WRONG class
+				// If guess is an error, add the WRONG class
 				button.classList.add('wrong');
 			} else if (this.activePhrase.checkLetter(button.innerHTML) === true) {
 				game.checkForWin();
@@ -162,19 +162,14 @@
 			button.disabled = true;
 		// If user is using the keyboard, use the event.key value instead of button.innerHTML
 		} else if (event.type === 'keydown'){
-			//console.log(keyLetterCheck);
 			button = document.querySelector('[data-value = ' + event.key+']');
-			//console.log(button);
 			button.disabled = true;
 			if(this.activePhrase.checkLetter(event.key)=== false){
-				button.classList.add('wrong');//
-				
-				
+				button.classList.add('wrong');	
 			} else if(this.activePhrase.checkLetter(event.key)=== true){
 				// Because the event info on keydown is different from onclick, user data attr to get the desired key
-				button.classList.add('chosen');//
+				button.classList.add('chosen');
 				game.checkForWin();
-				
 			}
 		}
 	}
@@ -182,8 +177,7 @@
  	removeLife() {
 		// Max number of attempts
 		const permittedAttempts = 4;
-		
-		//console.log(this.missed);
+
 		//Grab the hearts so we can replace the child images
 		const hearts = document.querySelectorAll('#scoreboard ol li');
 	
@@ -193,40 +187,37 @@
 		
 		//Check total amount of incorrect guesses against permittedAttempts
 		if(this.missed > permittedAttempts){
-			//If there are 5 error, game over
-			console.log('error');
+			//If there are 5 errors, game over
 			this.gameOver(false); 
 		}
-		//if this isn't a match
-		
-		//this.missed++;
-		// start counter
-		// remove heart png and replace it
-
-		//if counter == 5, run the end game
- 		/* removeLife(): this method removes a life from the scoreboard, by replacing one of the liveHeart.png images with a lostHeart.png image (found in the images folder) and increments the missed property. If the player has five missed guesses (i.e they're out of lives), then end the game by calling the gameOver() method.*/
-		
  	}
 
  	checkForWin() {
-		// console.log('fires');
+		 // Get and count all the letters in the active phrase
 		const letters = document.querySelectorAll('#phrase ul .letter');
 		const totalLetter = letters.length;
+
+		//Get and count all of the letters with a class of show, indicating correct guesses
 		const totalShow = document.querySelectorAll('.show').length;
+		
+		//If there are as many '.show's as there are total letters, then user has won
 		if(totalLetter === totalShow ){
 			this.gameOver(true);
 		}
  	}
 
  	gameOver(gameWon) {
+		// Toggle the overlay back on to indicate game has finished
 		const introOverlay = document.getElementById('overlay');
 		introOverlay.style.display='flex';
+
+		// If user has lost, show correct messaging and color scheme
 		if(gameWon === false){
 			introOverlay.querySelector('h1').innerHTML ='Sorry, you lost this round!';
 			introOverlay.classList.remove('start');
 			introOverlay.classList.add('lose');
-			
 		}
+		// If user has won, show correct messaging and color scheme
 		if(gameWon===true){
 			introOverlay.querySelector('h1').innerHTML ='Hooray, you won this round!';
 			introOverlay.classList.remove('start');
@@ -235,5 +226,4 @@
 		}
 		
  	}
-
  }
