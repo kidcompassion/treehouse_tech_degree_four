@@ -5,32 +5,110 @@
  class Game {
 
  	constructor() {
- 		this.missed = 0;
+		this.missed = 0;
  		this.phrases = this.createPhrases();
 		this.activePhrase = null;
  	}
 
+	/**
+	* Begins game by selecting a random phrase and displaying it to user
+	*/
+
  	startGame() {
 		// Reset game on every start, to ensure user always gets a new screen
 		game.resetGame();
+
 		//set up active phrase object
 		this.activePhrase = new Phrase(game.getRandomPhrase());
+
 		// toggle off the start overlay
 		const introOverlay = document.getElementById('overlay');
 		introOverlay.style.display = 'none';
+
 		//Render the game board
 		this.activePhrase.addPhraseToDisplay();
-	 }
-	 
+	}
+	
+	/*
+	* Selects random phrase from phrases property 
+	* @return {Object} Phrase object chosen to be used 
+	*/
 
-	 resetGame(){
+	getRandomPhrase() {
+		// generate random # from 1-5
+		let randomNum = Math.ceil( Math.random() * 5 ) -1 ;
+		// retrieve and return that index out ofthe array
+		return this.phrases[randomNum].phrase;
+ 	}
+
+
+	/**
+	 * Test phrases to make sure they only have spaces and letters
+	 */
+
+	testPhrases(){
+		// Create regEx verifying phrases have spaces and letters only
+		let regEx = /^[a-zA-Z\s]*$/; 
+		
+		// create list of possible phrases to test
+		let possiblePhrases = [
+			'A Career That Spanned Generations',
+			'Academy Awards Host',
+			'Josie And The Pussycats In Outer Space',
+			'Copies Of My Transcripts',
+			'Pasta Maker'
+		];
+
+		//Create array to hold phrases that pass the test
+		let approvedPhrases = [];
+
+		//Loop through phrase strings and push everything with letters and spaces only into an array
+		possiblePhrases.forEach(function(possiblePhrase, index){
+			if(regEx.test(possiblePhrase)=== true){
+				approvedPhrases[index] = possiblePhrase;
+			};
+		});
+
+		return approvedPhrases;
+	}
+
+	/** 
+	 * Creates phrases for use in game 
+	 * @return {array} An array of phrases that could be used in the game 
+	 * */
+
+	createPhrases(){
+		// List of phrase strings that have been run through a regex
+		let testedPhrases = this.testPhrases();
+		// Array to hold phrase objects
+		let approvedPhrases = [];
+
+		// Loop through each phrase string and pass it into an Object
+		testedPhrases.forEach(function(approved){
+			//..then pass object into an array
+			approvedPhrases.push(new Phrase(approved));
+		});
+		
+		//Set value of this.phrases to the array of tested phrase objects
+		this.phrases = approvedPhrases;
+
+		return this.phrases;
+	}
+
+
+	/**
+	 * Clears the old game tiles and all keyboard classes for selected letters.
+	 * Re-enables all keys
+	 */
+
+	resetGame(){
 		// First, remove all phrase tiles, to ensure a new board to play on
 		const oldPhrase = document.querySelector('#phrase ul');
 		oldPhrase.innerHTML = '';
 
 		// Next, grab all the button keys and loop through them, removing...
 		const keys = document.querySelectorAll('.key');
-	
+
 		keys.forEach(key=>{ 
 			// Any WRONG class
 			key.classList.remove('wrong');
@@ -45,80 +123,70 @@
 		// Loop through hearts and reset the image src attributes to show libe hearts
 		hearts.forEach(heart=>{
 			heart.firstElementChild.setAttribute('src', 'images/liveHeart.png');
-		})
-	 }
+		});
+	}
 
 
-	 /*
-	 * Selects random phrase from phrases property 
-	 * @return {Object} Phrase object chosen to be used 
-	 */
-
- 	getRandomPhrase() {
-		// generate random # from 1-5
-		let randomNum = Math.ceil( Math.random() * 5 ) -1 ;
-		// retrieve that index out ofthe array
-		return this.phrases[randomNum];
- 	}
-
-	 /** 
-	  * Creates phrases for use in game 
-	  * @return {array} An array of phrases that could be used in the game 
-	  * */
-
-	createPhrases(){
-		this.phrases = [
-			'A Career That Spanned Generations',
-			'Academy Awards Host',
-			'Josie And The Pussycats In Outer Space',
-			'Copies Of My Transcripts',
-			'Pasta Maker'
-		];
-		return this.phrases;
+	addDataAttrToKeys(){
+		const allKeys = document.querySelectorAll('.key');
+		allKeys.forEach(key=>{
+			key.setAttribute('data-value', key.innerHTML);
+		});
 	}
 
 	/**
-	 * Get the user's guess based on click event
-	 * @param {Object} event 
-	 */
-	getUserGuess(event){
-		game.updateKeyState(event, this.activePhrase.checkLetter(event.target.innerHTML));
-		game.checkForWin();
-	}
+	* Handles onscreen keyboard button clicks
+	* @param (HTMLButtonElement) button - The  button element
+	* @param (Object) event - whether the user clicked the button or used the keydown
+	*/
+	
+	 handleInteraction(button, event) {
+		// Add a data attribute to all keys for easier access via keyboard
+		this.addDataAttrToKeys();
 
-	/**
-	 * Upon guess, determines whether the guess was right or wrong, disabled the key and adds appropriate class
-	 * 
-	 * @param {Object} event 
-	 */
+		//const clickLetterCheck = this.activePhrase.checkLetter(button.innerHTML);
+		//const keyLetterCheck = this.activePhrase.checkLetter(event.key);
 
-	updateKeyState(event, letter){
-		// Check the boolean in the checkLetter method, so we can tell if it was a match or an error
-		if(letter=== false){
-			// If it's an error, add the WRONG class
-			event.target.classList.add('wrong');
-		} else if (letter === true) {
-			// If it's an match, add the CHOSEN class
-			event.target.classList.add('chosen');
+		// Determine whether user is clicking or using the keyboard
+		if(event.type === 'click'){
+			//console.log(button);
+			button.disabled = true;
+			if(this.activePhrase.checkLetter(button.innerHTML)=== false){
+				// If it's an error, add the WRONG class
+				button.classList.add('wrong');
+			} else if (this.activePhrase.checkLetter(button.innerHTML) === true) {
+				game.checkForWin();
+				// If it's an match, add the CHOSEN class
+				button.classList.add('chosen');
+			}
+			button.disabled = true;
+		// If user is using the keyboard, use the event.key value instead of button.innerHTML
+		} else if (event.type === 'keydown'){
+			//console.log(keyLetterCheck);
+			button = document.querySelector('[data-value = ' + event.key+']');
+			//console.log(button);
+			button.disabled = true;
+			if(this.activePhrase.checkLetter(event.key)=== false){
+				button.classList.add('wrong');//
+				
+				
+			} else if(this.activePhrase.checkLetter(event.key)=== true){
+				// Because the event info on keydown is different from onclick, user data attr to get the desired key
+				button.classList.add('chosen');//
+				game.checkForWin();
+				
+			}
 		}
-		//Disable the selected letter’s onscreen keyboard button.
-		event.target.disabled = true;
 	}
-
- 	handleInteraction() {
-		this.getUserGuess(event);
-	 }
-	 
-
-
 
  	removeLife() {
 		// Max number of attempts
 		const permittedAttempts = 4;
 		
+		//console.log(this.missed);
 		//Grab the hearts so we can replace the child images
 		const hearts = document.querySelectorAll('#scoreboard ol li');
-		console.log(this.missed);
+	
 		// Use attribute setter so we can show the missing life
 		hearts[this.missed].firstElementChild.setAttribute('src', 'images/lostHeart.png');
 		this.missed++;
@@ -165,7 +233,6 @@
 			introOverlay.classList.add('win');
 			//console.log('won');
 		}
- 		/* this method displays the original start screen overlay, and depending on the outcome of the game, updates the overlay h1 element with a friendly win or loss message, and replaces the overlay’s start CSS class with either the win or lose CSS class.*/
 		
  	}
 
