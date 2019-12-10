@@ -1,5 +1,5 @@
 /* Main styles */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&Roboto:300');
+@import url('https://fonts.googleapis.com/css?family=Baskervville|Bebas+Neue&display=swap');
 
 /* Variables */
 
@@ -20,7 +20,7 @@
 
 * {
   box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Baskervville', serif;
 }
 
 body {
@@ -28,6 +28,8 @@ body {
   flex-direction: column;
   display: flex;
   height: 100vh;
+  background-color: #333;
+  color:#fff;
 }
 
 li, ol, ul {
@@ -37,13 +39,15 @@ li, ol, ul {
 
 h2 {
   margin: 0;
-  text-transform: uppercase;
+  text-transform: capitalize;
+  letter-spacing: 10px;
   font-size: var(--font-size-large);
   margin: 0;
 }
 
 h1 {
   font-size: 30px;
+
 }
 
 button {
@@ -58,6 +62,7 @@ button {
   -o-transition: var(--transition);
   transition: var(--transition);
   cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
 }
 
 #btn__reset {
@@ -86,7 +91,7 @@ button {
 /* Title */
 
 .header {
-  color: #3a3f58;
+  color: #fff;
 }
 
 
@@ -94,6 +99,7 @@ button {
 
 .letter {
   font-size: var(--font-size-medium);
+  font-family: 'Bebas Neue', sans-serif;
   height: 65px;
   width: 65px;
   padding: 20px 1px 0 1px;

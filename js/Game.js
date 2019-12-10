@@ -222,16 +222,16 @@
 		const introOverlay = document.getElementById('overlay');
 		introOverlay.style.display='flex';
 		if(gameWon === false){
-			introOverlay.querySelector('h1').innerHTML ='Sorry, you lose';
+			introOverlay.querySelector('h1').innerHTML ='Sorry, you lost this round!';
 			introOverlay.classList.remove('start');
 			introOverlay.classList.add('lose');
-			//console.log('game over');
+			
 		}
 		if(gameWon===true){
-			introOverlay.querySelector('h1').innerHTML ='Hooray, you win';
+			introOverlay.querySelector('h1').innerHTML ='Hooray, you won this round!';
 			introOverlay.classList.remove('start');
 			introOverlay.classList.add('win');
-			//console.log('won');
+			
 		}
 		
  	}
