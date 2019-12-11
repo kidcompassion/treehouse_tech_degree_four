@@ -29,6 +29,8 @@
 		this.activePhrase.addPhraseToDisplay();
 	}
 	
+
+	
 	/*
 	* Selects random phrase from phrases property 
 	* @return {Object} Phrase object chosen to be used 
@@ -55,13 +57,9 @@
 		//Create array to hold phrases that pass the test
 		let approvedPhrases = [];
 
-		//Loop through phrase strings and push everything with letters and spaces only into an array
-		possiblePhrases.forEach(function(possiblePhrase, index){
-			if(regEx.test(possiblePhrase)=== true){
-				approvedPhrases[index] = possiblePhrase;
-			};
-		});
-
+		//Filter phrase strings based on regex pass/fail
+		approvedPhrases = possiblePhrases.filter(possiblePhrase => regEx.test(possiblePhrase)=== true);
+									
 		return approvedPhrases;
 	}
 
@@ -88,7 +86,7 @@
 		let approvedPhrases = [];
 
 		// Loop through each phrase string and pass it into an Object
-		testedPhrases.forEach(function(approved){
+		testedPhrases.map(approved=>{
 			//..then pass object into an array
 			approvedPhrases.push(new Phrase(approved));
 		});
@@ -202,7 +200,6 @@
 
 		//Grab the hearts so we can replace the child images
 		const hearts = document.querySelectorAll('#scoreboard ol li');
-	
 		// Use attribute setter so we can show the missing life
 		hearts[this.missed].firstElementChild.setAttribute('src', 'images/lostHeart.png');
 		this.missed++;
@@ -211,6 +208,7 @@
 		if(this.missed > permittedAttempts){
 			//If there are 5 errors, game over
 			this.gameOver(false); 
+			//this.missed = 0;
 		}
  	}
 
@@ -236,7 +234,7 @@
 		// Put focus on reset button in case user is on a keyboard
 		const startBtn = document.getElementById('btn__reset');
 		startBtn.focus();
-		
+
 		// If user has lost, show correct messaging and color scheme
 		if(gameWon === false){
 			introOverlay.querySelector('h1').innerHTML ='Sorry, you lost this round!';
@@ -247,9 +245,9 @@
 		if(gameWon===true){
 			introOverlay.querySelector('h1').innerHTML ='Hooray, you won this round!';
 			introOverlay.classList.remove('start');
+			introOverlay.classList.remove('lose');
 			introOverlay.classList.add('win');
 			
 		}
-		
  	}
  }

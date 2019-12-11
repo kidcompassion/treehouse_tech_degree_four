@@ -11,8 +11,10 @@
 	/**
 	 * Converts the phrase string into an array for easier manipulation
 	 */
+	
 	convertPhraseToArray(){
-		this.characterArray = Array.from(this.phrase);
+		// Use spread operator to explode the phrase into an arrays
+		this.characterArray = [...this.phrase];
 		return this.characterArray;
 	}
 
@@ -29,9 +31,9 @@
 		let phraseContainer = document.getElementById('phrase').firstElementChild;
 		
 		//Turn the phrase into an array of characters so I can loop through it
-		this.convertPhraseToArray();
+		const phraseCharacters = this.convertPhraseToArray();
 
-		this.characterArray.forEach(function(character, index){
+		phraseCharacters.forEach(function(character, index){
 
 			// create an LI I can insert values/add classes to
 			characterMarkup = document.createElement('li');

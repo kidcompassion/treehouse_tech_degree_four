@@ -22,6 +22,9 @@ startBtn.addEventListener('keydown', function(event){
 	if(event.keyCode === 13){
 		game = new Game();
 		game.startGame();
+	} else {
+		// Prevents users on their keyboard from falsely making guesses before the board is ready
+		alert('You must click the button or press enter to start');
 	}
 });
 
