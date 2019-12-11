@@ -8,6 +8,8 @@ let game='';
 const startBtn = document.getElementById('btn__reset');
 const keyboardKeys = document.querySelectorAll('.key');
 
+// On load, put focus on the startBtn, in case user is using the keyboard
+startBtn.focus();
 
 // If user clicks startBtn, start game
 startBtn.addEventListener('click', function(event){
@@ -16,8 +18,6 @@ startBtn.addEventListener('click', function(event){
 });
 
 startBtn.addEventListener('keydown', function(event){
-	// On load, put focus on the startBtn
-	startBtn.focus();
 	// if user presses enter, start the game
 	if(event.keyCode === 13){
 		game = new Game();

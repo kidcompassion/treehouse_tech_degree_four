@@ -106,11 +106,11 @@
 	 */
 
 	resetGame(){
-		// First, remove all phrase tiles, to ensure a new board to play on
+		// Remove all phrase tiles, to ensure a new board to play on
 		const oldPhrase = document.querySelector('#phrase ul');
 		oldPhrase.innerHTML = '';
 
-		// Next, grab all the button keys and loop through them, removing...
+		// Grab all the button keys and loop through them, removing...
 		const keys = document.querySelectorAll('.key');
 
 		keys.forEach(key=>{ 
@@ -138,6 +138,7 @@
 		});
 	}
 
+	
 	/**
 	* Handles onscreen keyboard button clicks
 	* @param (HTMLButtonElement) button - The  button element
@@ -150,26 +151,47 @@
 
 		// Determine whether user is clicking or using the keyboard
 		if(event.type === 'click'){
+			
+			// Disable selected button
 			button.disabled = true;
+
 			if(this.activePhrase.checkLetter(button.innerHTML)=== false){
+			
 				// If guess is an error, add the WRONG class
 				button.classList.add('wrong');
+			
 			} else if (this.activePhrase.checkLetter(button.innerHTML) === true) {
-				game.checkForWin();
+				
+				// If checkForWin method is true, run game over method
+				if (game.checkForWin() === true){
+					this.gameOver(true);
+				};
+			
 				// If it's an match, add the CHOSEN class
 				button.classList.add('chosen');
 			}
 			button.disabled = true;
+		
 		// If user is using the keyboard, use the event.key value instead of button.innerHTML
 		} else if (event.type === 'keydown'){
+			
+			//Get the data value from the key
 			button = document.querySelector('[data-value = ' + event.key+']');
+			
+			//Disable selected button
 			button.disabled = true;
+			
 			if(this.activePhrase.checkLetter(event.key)=== false){
 				button.classList.add('wrong');	
+
 			} else if(this.activePhrase.checkLetter(event.key)=== true){
 				// Because the event info on keydown is different from onclick, user data attr to get the desired key
 				button.classList.add('chosen');
-				game.checkForWin();
+				
+				// If checkForWin method is true, run game over method
+				if (game.checkForWin() === true){
+					this.gameOver(true);
+				};
 			}
 		}
 	}
@@ -202,7 +224,7 @@
 		
 		//If there are as many '.show's as there are total letters, then user has won
 		if(totalLetter === totalShow ){
-			this.gameOver(true);
+			return true;
 		}
  	}
 
@@ -211,6 +233,10 @@
 		const introOverlay = document.getElementById('overlay');
 		introOverlay.style.display='flex';
 
+		// Put focus on reset button in case user is on a keyboard
+		const startBtn = document.getElementById('btn__reset');
+		startBtn.focus();
+		
 		// If user has lost, show correct messaging and color scheme
 		if(gameWon === false){
 			introOverlay.querySelector('h1').innerHTML ='Sorry, you lost this round!';
